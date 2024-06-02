@@ -1,0 +1,12 @@
+[Unit]
+Description=rtmidi logging to Snowflake
+After=network.target multi-user.target
+[Service]
+Type=simple
+Restart=always
+# Delay the restart a little bit
+RestartSec=3
+WorkingDirectory=/opt/rtmidi-logging-to-snowflake/
+ExecStart=/opt/rtmidi-logging-to-snowflake/.venv/bin/python /opt/rtmidi-logging-to-snowflake/main.py
+[Install]
+WantedBy=multi-user.target

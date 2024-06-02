@@ -1,0 +1,18 @@
+value,pad_name,pad_zone,pad_status
+"G#1","Hi-Hat","Pedal","Closing"
+"A#-1","Hi-Hat","Edge","Closed"
+"D0","Hi-Hat","Edge","Open"
+"F#1","Hi-Hat","Bow","Closed"
+"A#1","Hi-Hat","Bow","Open"
+"D1","Snare","Head",
+"E1","Snare","Rim",
+"C2","Tom Hi",,
+"A1","Tom Mid",,
+"F1","Tom Lo",,
+"G2","Crash","Edge",
+"C#2","Crash","Bow",
+"E2","China","Edge",
+"A2","China","Bow",
+"B2","Ride","Edge",
+"D#2","Ride","Bow",
+"C1","Kick"

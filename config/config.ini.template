@@ -1,0 +1,11 @@
+[capture]
+# Settings pertaining to how notes/data are logged
+# The name of the midi device we want to listen to. List them with rtmidi first, to check.
+listen_midi_device=UM-ONE 20:0
+# rtmidi-specific setting for listening to notes. 100ms seems tight enough?
+listen_interval_ms=100
+# After how many seconds we clear the buffer and send our data to Snowflake
+buffer_interval_s=5
+
+[database]
+dest_table=midi_drums_raw
