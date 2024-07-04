@@ -63,3 +63,65 @@ CREATE VIEW TV_MIDI_DRUMS_NOTES(
     LEFT JOIN MIDI_TD4_DRUMS_MAPPING dm ON dr.v::json->>'value'::varchar = dm."value"
     WHERE dr.v::json->>'midi-data-type'::varchar = 'note on'
 );
+
+CREATE VIEW TV_MIDI_DRUMS_NOTES_CLUSTERED AS (
+
+	WITH event_data AS (
+	    SELECT 
+	        *
+	    FROM 
+	        tv_midi_drums_notes
+	    ORDER BY 
+	        "timestamp"
+	),
+	time_diffs AS (
+	    SELECT
+	        "timestamp",
+	        midi_data_type,
+	        midi_note,
+	        drum_pad,
+	        raw_data,
+	        LAG("timestamp") OVER (ORDER BY "timestamp") AS prev_event_timestamp
+	    FROM
+	        event_data
+	),
+	cluster_marks AS (
+	    SELECT
+	        "timestamp",
+	        midi_data_type,
+	        midi_note,
+	        drum_pad,
+	        raw_data,
+	        prev_event_timestamp,
+	        CASE 
+	            WHEN prev_event_timestamp IS NULL THEN 0
+	            WHEN "timestamp" - prev_event_timestamp > INTERVAL '15 minutes' THEN 1  -- Adjust threshold as needed
+	            ELSE 0
+	        END AS is_new_cluster
+	    FROM
+	        time_diffs
+	),
+	clusters AS (
+	    SELECT
+	        "timestamp",
+	        midi_data_type,
+	        midi_note,
+	        drum_pad,
+	        raw_data,
+	        SUM(is_new_cluster) OVER (ORDER BY "timestamp") AS cluster_id
+	    FROM
+	        cluster_marks
+	)
+	SELECT
+	    "timestamp",
+	    midi_data_type,
+	    midi_note,
+	    drum_pad,
+	    raw_data,
+	    cluster_id AS session_cluster
+	FROM
+	    clusters
+	ORDER BY
+	    "timestamp"
+)	
+;
